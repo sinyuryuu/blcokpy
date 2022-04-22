@@ -2756,49 +2756,54 @@ var ZERO_BLOCK = BlockMirrorTextToBlocks.create_block('ast_Num', null, {
 });
 BlockMirrorBlockEditor.EXTRA_TOOLS = {};
 var TOOLBOX_CATEGORY = {};
+// 
+// 
+// 從這裡修改
+// 
+// 
 TOOLBOX_CATEGORY.VARIABLES = {
-  name: 'Variables',
+  name: '變數',
   colour: 'VARIABLES',
   custom: 'VARIABLE'
 };
 TOOLBOX_CATEGORY.DECISIONS = {
-  name: "Decisions",
+  name: "邏輯",
   colour: "LOGIC",
   blocks: ['if ___: pass', 'if ___: pass\nelse: pass', '___ < ___', '___ and ___', 'not ___']
 };
 TOOLBOX_CATEGORY.CALCULATIONS = {
-  name: "Calculation",
+  name: "數學",
   colour: "MATH",
   blocks: ["___ + ___", "round(___)"]
 };
 TOOLBOX_CATEGORY.OUTPUT_WITH_PLOTTING = {
-  name: "Output",
+  name: "輸出",
   colour: "PLOTTING",
   blocks: ["print(___)", "plt.plot(___)", "plt.scatter(___, ___)", "plt.hist(___)", "plt.bar(___, ___, tick_label=___)", "plt.boxplot(___)", "plt.show()", "plt.title(___)", "plt.xlabel(___)", "plt.ylabel(___)", "plt.hlines(___, ___, ___)", "plt.vlines(___, ___, ___)"]
 };
 TOOLBOX_CATEGORY.TURTLES = {
-  name: "Turtles",
+  name: "繪圖",
   colour: "PLOTTING",
   blocks: ["turtle.mainloop()", "turtle.forward(50)", "turtle.backward(50)", "turtle.right(90)", "turtle.left(90)", "turtle.goto(0, 0)", "turtle.setx(100)", "turtle.sety(100)", "turtle.setheading(270)", "turtle.pendown()", "turtle.penup()", "turtle.pencolor('blue')"]
 };
 TOOLBOX_CATEGORY.INPUT = {
-  name: "Input",
+  name: "輸入",
   colour: "TEXT",
   blocks: ["input('')"]
 };
 TOOLBOX_CATEGORY.VALUES = {
-  name: "Values",
+  name: "值",
   colour: "TEXT",
   blocks: ['""', "0", "True"]
 };
 TOOLBOX_CATEGORY.SEP = "<sep></sep>";
 TOOLBOX_CATEGORY.CONVERSIONS = {
-  name: "Conversion",
+  name: "轉型",
   colour: "TEXT",
   blocks: ["int(___)", "float(___)", "str(___)", "bool(___)"]
 };
 TOOLBOX_CATEGORY.DICTIONARIES = {
-  name: "Dictionaries",
+  name: "字典",
   colour: "DICTIONARY",
   blocks: ["{'1st key': ___, '2nd key': ___, '3rd key': ___}", "{}", "___['key']"]
 };
@@ -2813,16 +2818,16 @@ BlockMirrorBlockEditor.prototype.TOOLBOXES = {
   'minimal': [// TODO: What should live in here?
   TOOLBOX_CATEGORY.VARIABLES],
   //******************************************************
-  'normal': [TOOLBOX_CATEGORY.VARIABLES, TOOLBOX_CATEGORY.DECISIONS, {
-    name: "Iteration",
+  'full': [TOOLBOX_CATEGORY.VARIABLES, TOOLBOX_CATEGORY.DECISIONS, {
+    name: "邏輯",
     colour: "CONTROL",
     blocks: ['for ___ in ___: pass', 'while ___: pass', 'break']
   }, {
-    name: "Functions",
+    name: "函數",
     colour: "FUNCTIONS",
     blocks: ["def ___(___): pass", "def ___(___: int)->str: pass", "return ___"]
   }, TOOLBOX_CATEGORY.SEP, TOOLBOX_CATEGORY.CALCULATIONS, TOOLBOX_CATEGORY.OUTPUT_WITH_PLOTTING, TOOLBOX_CATEGORY.INPUT, TOOLBOX_CATEGORY.TURTLES, TOOLBOX_CATEGORY.SEP, TOOLBOX_CATEGORY.VALUES, TOOLBOX_CATEGORY.CONVERSIONS, {
-    name: "Lists",
+    name: "串列",
     colour: "LIST",
     blocks: ["[0, 0, 0]", "[___, ___, ___]", "[]", "___.append(___)", "range(0, 10)"]
   }, TOOLBOX_CATEGORY.DICTIONARIES],
@@ -2837,7 +2842,11 @@ BlockMirrorBlockEditor.prototype.TOOLBOXES = {
     blocks: ["[0, 0, 0]", "[___, ___, ___]", "[]", "___.append(___)"]
   }],
   //******************************************************
-  'full': [TOOLBOX_CATEGORY.VARIABLES, {
+
+
+
+
+  'normal': [TOOLBOX_CATEGORY.VARIABLES, {
     name: "Literal Values",
     colour: "LIST",
     blocks: ["0", "''", "True", "None", "[___, ___, ___]", "(___, ___, ___)", "{___, ___, ___}", "{___: ___, ___: ___, ___: ___}"]
@@ -2864,7 +2873,7 @@ BlockMirrorBlockEditor.prototype.TOOLBOXES = {
   }, TOOLBOX_CATEGORY.SEP, {
     name: "Control Flow",
     colour: "CONTROL",
-    blocks: ['if ___: pass', 'if ___: pass\nelse: pass', 'for ___ in ___: pass', 'while ___: pass', 'break', 'continue', 'try: pass\nexcept ___ as ___: pass', 'raise ___', 'assert ___', 'with ___ as ___: pass']
+    blocks: ['if ___: pass', 'if ___: pass\nelif ___: pass','if ___: pass\nelse: pass', 'for ___ in ___: pass', 'while ___: pass', 'break', 'continue', 'try: pass\nexcept ___ as ___: pass', 'raise ___', 'assert ___', 'with ___ as ___: pass']
   }, TOOLBOX_CATEGORY.SEP, TOOLBOX_CATEGORY.OUTPUT_WITH_PLOTTING, TOOLBOX_CATEGORY.INPUT, {
     name: "Files",
     colour: "FILE",
@@ -2894,7 +2903,7 @@ BlockMirrorBlockEditor.prototype.TOOLBOXES = {
     colour: "SEQUENCES",
     blocks: ["[___ for ___ in ___]", "(___ for ___ in ___)", "{___ for ___ in ___}", "{___: ___ for ___ in ___ if ___}", "[___ for ___ in ___ if ___]", "(___ for ___ in ___ if ___)", "{___ for ___ in ___ if ___}", "{___: ___ for ___ in ___ if ___}"]
   }, {
-    name: "Comments",
+    name: "註解",
     colour: "PYTHON",
     blocks: ["# ", '"""\n"""']
   }
@@ -2997,6 +3006,43 @@ Blockly.Python['ast_For'] = function (block) {
   return code;
 };
 
+
+Blockly.Python['controls_if_better'] = function(block) {
+  // If/elseif/else condition.
+  var n = 0;
+  var code = '', branchCode, conditionCode;
+  do {
+    conditionCode = Blockly.Python.valueToCode(block, 'IF' + n,
+      Blockly.Python.ORDER_NONE) || '___';
+    branchCode = Blockly.Python.statementToCode(block, 'DO' + n) ||
+        Blockly.Python.PASS;
+    code += (n == 0 ? 'if ' : 'elif ' ) + conditionCode + ':\n' + branchCode;
+
+    ++n;
+  } while (block.getInput('IF' + n));
+
+  if (block.getInput('ELSE')) {
+    branchCode = Blockly.Python.statementToCode(block, 'ELSE') ||
+        Blockly.Python.PASS;
+    code += 'else:\n' + branchCode;
+  }
+  return code;
+};
+
+BlockMirrorTextToBlocks.prototype['if_better'] = function (node, parent) {
+  var condition = node.test;
+  var body = node.consequent;
+  var elseBody = node.alternate;
+  var code = 'if ' + BlockMirrorTextToBlocks.convert(condition) + ':\n' + BlockMirrorTextToBlocks.convert(body);
+  if (elseBody) {
+    code += 'else:\n' + BlockMirrorTextToBlocks.convert(elseBody);
+  }
+  return code;
+};
+
+  
+
+
 BlockMirrorTextToBlocks.prototype['ast_For'] = function (node, parent) {
   var target = node.target;
   var iter = node.iter;
@@ -3020,17 +3066,20 @@ BlockMirrorTextToBlocks.prototype['ast_For'] = function (node, parent) {
 
 Blockly.Python['ast_ForElse'] = Blockly.Python['ast_For'];
 BlockMirrorTextToBlocks.prototype['ast_ForElse'] = BlockMirrorTextToBlocks.prototype['ast_For'];
+
 Blockly.Blocks['ast_If'] = {
   init: function init() {
     this.orelse_ = 0;
     this.elifs_ = 0;
-    this.appendValueInput('TEST').appendField("if");
+    this.appendValueInput('TEST').appendField(Blockly.Msg.AST_IF_TOOLTIP);  //判斷式設定 appendField('if')
+
     this.appendStatementInput("BODY").setCheck(null).setAlign(Blockly.ALIGN_RIGHT);
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(BlockMirrorTextToBlocks.COLOR.LOGIC);
     this.updateShape_();
+  
   },
   // TODO: Not mutable currently
   updateShape_: function updateShape_() {
@@ -3051,7 +3100,7 @@ Blockly.Blocks['ast_If'] = {
     }
 
     if (this.orelse_ && !this.getInput('ELSE')) {
-      this.appendDummyInput('ORELSETEST').appendField("else:");
+      this.appendDummyInput('ORELSETEST').appendField(Blockly.Msg.AST_ELSE_TOOLTIP);    //判斷式設定 appendField('else')
       this.appendStatementInput("ORELSEBODY").setCheck(null);
     } else if (!this.orelse_ && this.getInput('ELSE')) {
       block.removeInput('ORELSETEST');
@@ -3118,6 +3167,29 @@ Blockly.Python['ast_If'] = function (block) {
   return test + body + elifs.join("") + orelse;
 };
 
+
+Blockly.Python['controls_if_better'] = function(block) {
+  // If/elseif/else condition.
+  var n = 0;
+  var code = '', branchCode, conditionCode;
+  do {
+    conditionCode = Blockly.Python.valueToCode(block, 'IF' + n,
+      Blockly.Python.ORDER_NONE) || '___';
+    branchCode = Blockly.Python.statementToCode(block, 'DO' + n) ||
+        Blockly.Python.PASS;
+    code += (n == 0 ? 'if ' : 'elif ' ) + conditionCode + ':\n' + branchCode;
+
+    ++n;
+  } while (block.getInput('IF' + n));
+
+  if (block.getInput('ELSE')) {
+    branchCode = Blockly.Python.statementToCode(block, 'ELSE') ||
+        Blockly.Python.PASS;
+    code += 'else:\n' + branchCode;
+  }
+  return code;
+};
+
 BlockMirrorTextToBlocks.prototype['ast_If'] = function (node, parent) {
   var test = node.test;
   var body = node.body;
@@ -3156,6 +3228,9 @@ BlockMirrorTextToBlocks.prototype['ast_If'] = function (node, parent) {
     "@elifs": elifCount
   }, statements);
 };
+
+
+
 
 Blockly.Blocks['ast_While'] = {
   init: function init() {

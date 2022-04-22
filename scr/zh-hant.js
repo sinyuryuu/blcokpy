@@ -1,7 +1,7 @@
 // This file was automatically generated.  Do not modify.
 
 'use strict';
-
+Blockly.Msg['MATH_RADIAN_TO_DEGREE'] = "加入註解";
 Blockly.Msg["ADD_COMMENT"] = "加入註解";
 Blockly.Msg["CANNOT_DELETE_VARIABLE_PROCEDURE"] = "無法刪除變數「%1」，因為這是功能「%2」定義的一部份內容";
 Blockly.Msg["CHANGE_VALUE_TITLE"] = "修改值：";
@@ -274,7 +274,7 @@ Blockly.Msg["MATH_TRIG_TOOLTIP_TAN"] = "返回指定角度的正切值(非弧度
 Blockly.Msg["NEW_COLOUR_VARIABLE"] = "建立顏色變數…";
 Blockly.Msg["NEW_NUMBER_VARIABLE"] = "建立數值變數……";
 Blockly.Msg["NEW_STRING_VARIABLE"] = "建立字串變數……";
-Blockly.Msg["NEW_VARIABLE"] = "建立變數…";
+Blockly.Msg["NEW_VARIABLE"] = "建立變數(測試)…";
 Blockly.Msg["NEW_VARIABLE_TITLE"] = "新變數名稱：";
 Blockly.Msg["NEW_VARIABLE_TYPE_TITLE"] = "新變數類型：";
 Blockly.Msg["ORDINAL_NUMBER_SUFFIX"] = "";  // untranslated
@@ -304,6 +304,21 @@ Blockly.Msg["PROCEDURES_MUTATORARG_TITLE"] = "輸入名稱：";
 Blockly.Msg["PROCEDURES_MUTATORARG_TOOLTIP"] = "添加一個輸入區塊到函式。";
 Blockly.Msg["PROCEDURES_MUTATORCONTAINER_TITLE"] = "輸入";
 Blockly.Msg["PROCEDURES_MUTATORCONTAINER_TOOLTIP"] = "添加、刪除或重新排列此函式的輸入。";
+
+Blockly.Msg.AST_IF_HELPURL = "https://en.wikipedia.org/wiki/Radian";
+Blockly.Msg.AST_IF_TITLE = "假設是執行";
+Blockly.Msg.AST_IF_APPEND = "turn into degree";
+Blockly.Msg.AST_IF_TOOLTIP = "假設是執行";
+
+
+Blockly.Msg.AST_ELSE_HELPURL = "https://en.wikipedia.org/wiki/Radian";
+Blockly.Msg.AST_ELSE_TITLE = "都不是的話執行";
+Blockly.Msg.AST_ELSE_APPEND = "turn into degree";
+Blockly.Msg.AST_ELSE_TOOLTIP = "都不是的話執行";
+
+
+
+
 Blockly.Msg["REDO"] = "重做";
 Blockly.Msg["REMOVE_COMMENT"] = "移除註解";
 Blockly.Msg["RENAME_VARIABLE"] = "重新命名變數...";
@@ -421,3 +436,4 @@ Blockly.Msg["TEXTS_HUE"] = "160";
 Blockly.Msg["PROCEDURES_HUE"] = "290";
 Blockly.Msg["COLOUR_HUE"] = "20";
 Blockly.Msg["VARIABLES_DYNAMIC_HUE"] = "310";
+
