@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Block測試</title>
+    
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"></script>
+
+<!-- Blockly -->
+<script src="scr/blockly_compressed.js" type="text/javascript"></script>
+<script src="scr/blocks_compressed.js" type="text/javascript"></script>
+<script src="scr/zh-hant.js" type="text/javascript"></script>
+<script src="scr/python_compressed.js" type="text/javascript"></script>
+
+
+
+<!-- Skulpt -->
+
+<script src="scr/skulpt.js" type="text/javascript"></script>
+<script src="scr/skulpt-stdlib.js" type="text/javascript"></script>
+
+<!-- <script src="scr/skulpt_parser.js" type="text/javascript"></script>
+ -->
+
+
+
+<!-- CodeMirror -->
+<link rel="stylesheet" href="scr/codemirror.css">
+<link rel="stylesheet" href="scr/fullscreen.css">
+
+
+
+
+<!-- <link rel="stylesheet" href="../lib/codemirror/show-hint.css"> 顯示提示-->
+<!-- <script src="../lib/codemirror/show-hint.js" type="text/javascript"></script>  顯示提示-->
+<!-- <script src="../lib/codemirror/python-hint.js" type="text/javascript"></script> 顯示提示-->
+<script src="scr/codemirror.js" type="text/javascript"></script>
+<script src="scr/fullscreen.js" type="text/javascript"></script>
+<script src="scr/python.js" type="text/javascript"></script>
+
+
+
+
+
+
+
+<!-- BlockMirror -->
+<link rel="stylesheet" href="scr/block_mirror.css">
+<script src="scr/block_mirror.js" type="text/javascript"></script>
+
+
+
+
+</head>
+<body>
+    
+  
+    
+    <p style="text-align: center;"> 積木方塊測試--python </p> <!-- 文字置中 -->
+
+
+
+
+    <div style="margin-top: auto;" class="btn-group" data-toggle="buttons" data-bind="visible: !assignment.upload()">
+        <label onclick="editor.setMode('block');">
+            <input type="radio" name="blockpy-mode-set" autocomplete="off"> 積木
+        </label>
+        <label onclick="editor.setMode('split');">
+            <input type="radio" name="blockpy-mode-set" autocomplete="off" checked> 同時顯示
+        </label>
+        <label onclick="editor.setMode('text');">
+            <input type="radio" name="blockpy-mode-set" autocomplete="off"> 僅程式碼
+        </label>
+            
+    </div>
+
+
+  
+    <p>
+
+
+    <button id="go">取得程式碼</button>
+    <button id="run">輸出範例</button>
+    <button id="reset">重置</button>
+    <button class="download">匯出</button>  
+    <input type="text" class="filename" value="file.py"/>
+    <button type="button" onclick="runit()">執行檔案</button> 
+    
+    </p>
+
+
+
+    <!-- 從本機上傳檔案 -->
+
+    <form id="upload-form" action="upload.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" />
+        
+
+    </form>
+    <button id = "upload">讀取</button>
+
+    
+    
+  
+
+
+
+
+
+
+
+<div style="width:100%;height: 100%; margin-left: auto;margin-right: auto;" id='blockmirror-editor'> <!-- 900px -->
+    <div id="blockpy-div" style='height:100%'></div>
+</div>
+
+
+
+
+ 
+
+        <script>
+            const configuration = {
+            'container': document.getElementById('blockmirror-editor'),
+            blocklyMediaPath: '/media/',
+
+            
+            
+
+            }
+            let editor = new BlockMirror(configuration);
+
+            
+
+           
+            //'height': '2000px'
+        
+        
+        /* 設定預設Python程式碼 */
+        editor.setCode('');
+
+
+    
+
+        $('#go').click(function () {
+        var code = editor.getCode();
+        console.log(code);
+        alert(code);
+
+
+
+
+        });
+
+
+        $('#run').click(function () {
+            editor.blockEditor.setCode('class X:\n    """こんにちは"""\ndef add(self, a, b):\n        a = 0\n        return a\n\nx = X()\nx.add(5,3)');
+
+        });
+
+        $('#reset').click(function () {
+            editor.blockEditor.setCode('');
+        });
+
+
+       
+
+
+
+
+        function download (text, filename) {
+            var code = editor.getCode();
+            if (typeof filename === "undefined") {
+                filename = false;
+            };
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
+            if (filename) {
+                pom.setAttribute('download', filename);
+            }
+            pom.click();
+        };
+
+        //ipput() 跳出警示視窗輸入參數
+
+        function outf(text) { 
+            var mypre = document.getElementById("output"); 
+            mypre.innerHTML = mypre.innerHTML + text; 
+        } 
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                    throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+        }
+
+        // Here's everything you need to run a python program in skulpt
+        // grab the code from your textarea
+        // get a reference to your pre element for output
+        // configure the output function
+        // call Sk.importMainWithBody()
+        function runit() { 
+            var prog = editor.getCode();
+            var mypre = document.getElementById("output"); 
+            mypre.innerHTML = ''; 
+            Sk.pre = "output";
+            Sk.configure({output:outf, read:builtinRead}); 
+            (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
+            var myPromise = Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, prog, true);
+            });
+            myPromise.then(function(mod) {
+                console.log('success');
+            },
+                function(err) {
+                console.log(err.toString());
+            });
+            } 
+
+
+
+
+
+
+
+        $(document).ready(function() {
+
+            $('.download').click(function(e) {
+                var filename = $('.filename').val();
+                var fileguts = $('.fileguts').val();
+                download(fileguts, filename);
+            });
+
+
+        
+
+                
+        });
+        
+
+
+    /* 讀取檔案 */
+
+    $('#upload').click(function () {
+        var file = $('#file')[0].files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var contents = e.target.result;
+            editor.setCode(contents);
+        };
+        reader.readAsText(file);
+    });
+
+
+    
+    </script>
+
+
+
+
+<h3>輸出結果</h3> 
+<h1 id="output" ></h1>
+<!-- If you want turtle graphics include a canvas -->
+<div id="mycanvas"></div> 
+
+
+</div>
+
+
+</script>
+
+
+      
+    
+</body>
+
+
+</html>
